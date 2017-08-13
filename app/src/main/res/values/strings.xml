@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Poppular Movies</string>
+    <string name="menu_sort">Sort</string>
+    <string name="menu_most_popular">most popular</string>
+    <string name="menu_highest_rated">highest-rated</string>
+
+    <string name="error_message">
+        An error has occurred. Please try again by clicking on the filters.
+    </string>
+
+</resources>
