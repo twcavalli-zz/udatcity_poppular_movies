@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
 
+    private static String STATE_INSTANCE = "movie";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,12 +49,12 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
-        if(savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
-            loadMovieData("popular");
+        if(savedInstanceState == null || !savedInstanceState.containsKey(STATE_INSTANCE)) {
+            loadMovieData(NetworkUtils.Sort.popular);
         }
         else {
             showMoviesDataView();
-            ArrayList<Movie> list = savedInstanceState.getParcelableArrayList("movies");
+            ArrayList<Movie> list = savedInstanceState.getParcelableArrayList(STATE_INSTANCE);
             mMoviesAdapter.setMovieData(list);
         }
 
@@ -60,19 +62,18 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("movies", mMoviesAdapter.getList());
+        outState.putParcelableArrayList(STATE_INSTANCE, mMoviesAdapter.getList());
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onClick(Movie movie) {
-        Context context = this;
         Intent intent = new Intent(MainActivity.this, MovieInfoActivity.class);
-        intent.putExtra("movie", movie);
+        intent.putExtra(MovieInfoActivity.MOVIE_PARAM, movie);
         startActivity(intent);
     }
 
-    private void loadMovieData(String sort) {
+    private void loadMovieData(NetworkUtils.Sort sort) {
         showMoviesDataView();
         new FetchMoviesTask().execute(sort);
     }
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
+    public class FetchMoviesTask extends AsyncTask<NetworkUtils.Sort, Void, ArrayList<Movie>> {
 
         @Override
         protected void onPreExecute() {
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         }
 
         @Override
-        protected ArrayList<Movie> doInBackground(String... params) {
+        protected ArrayList<Movie> doInBackground(NetworkUtils.Sort... params) {
             if ( !isOnline() ) {
                 return null;
             }
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
                 return null;
             }
 
-            String sort = params[0];
+            NetworkUtils.Sort sort = params[0];
             URL moviesRequestUrl = NetworkUtils.buildUrl(sort);
 
             try {
@@ -143,16 +144,14 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         int id = item.getItemId();
         switch (id) {
             case R.id.action_most_popular:
-                loadMovieData("popular");
-                setTitle("Poppular Movies");
+                loadMovieData(NetworkUtils.Sort.popular);
+                setTitle(getString(R.string.menu_most_popular));
                 break;
             case R.id.action_highest_rated:
-                loadMovieData("top_rated");
-                setTitle("Top Rated Movies");
+                loadMovieData(NetworkUtils.Sort.top_rated);
+                setTitle(getString(R.string.menu_highest_rated));
                 break;
         }
-        // TODO: 29/07/2017 Implement action sort
-
         return super.onOptionsItemSelected(item);
     }
 

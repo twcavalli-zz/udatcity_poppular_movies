@@ -16,8 +16,12 @@ public final class NetworkUtils {
 
     private static final String BASE_API_URL = "http://api.themoviedb.org/3/movie";
     private static final String API_KEY = "YOUR_API_KEY";
-
     private static final String api_key = "api_key";
+
+    public enum Sort {
+        top_rated,
+        popular
+    }
 
     /**
      * This method creates the URL to get the movies.
@@ -25,9 +29,9 @@ public final class NetworkUtils {
      * @param sort The therm to sort data.
      * @return The request URL
      */
-    public static URL buildUrl(String sort) {
+    public static URL buildUrl(Sort sort) {
         Uri builtUri = Uri.parse(BASE_API_URL).buildUpon()
-                .appendPath(sort)
+                .appendPath(sort.toString())
                 .appendQueryParameter(api_key, API_KEY)
                 .build();
 

@@ -10,6 +10,7 @@ import poppularmovies.thomas.com.br.poppularmovies.data.Movie;
 
 public class MovieInfoActivity extends AppCompatActivity {
 
+    public static String MOVIE_PARAM = "movie";
     private Movie mMovie;
     private ImageView mMoviePoster;
     private TextView mMovieRating;
@@ -24,8 +25,8 @@ public class MovieInfoActivity extends AppCompatActivity {
         mMovie = null;
 
         Intent intentThatStartedThisActivity = getIntent();
-        if (intentThatStartedThisActivity.hasExtra("movie")) {
-            mMovie = intentThatStartedThisActivity.getParcelableExtra("movie");
+        if (intentThatStartedThisActivity.hasExtra(MOVIE_PARAM)) {
+            mMovie = intentThatStartedThisActivity.getParcelableExtra(MOVIE_PARAM);
         }
 
         mMoviePoster = (ImageView) findViewById(R.id.iv_details_movie_poster);
@@ -40,7 +41,7 @@ public class MovieInfoActivity extends AppCompatActivity {
                 .into(mMoviePoster);
 
         mMovieSynopsis.setText(mMovie.getSynopsis());
-        mMovieRating.setText("Rating: " + mMovie.getRating()+"");
-        mMovieRealiaseDate.setText("Release date: " + mMovie.getRelease_date());
+        mMovieRating.setText(getString(R.string.rating) + mMovie.getRating()+"");
+        mMovieRealiaseDate.setText(getString(R.string.release_date) + mMovie.getRelease_date());
     }
 }
